@@ -2,7 +2,7 @@ locals {
   location = "eastus2"
   tags = {
     provisioner = "terraform"
-    project = "ai-operations"
+    project     = "ai-operations"
   }
 
 }
@@ -10,7 +10,7 @@ locals {
 resource "azurerm_resource_group" "ml" {
   name     = "rg-aiops"
   location = local.location
-  tags = local.tags
+  tags     = local.tags
 }
 
 resource "azurerm_application_insights" "ml" {
@@ -18,7 +18,7 @@ resource "azurerm_application_insights" "ml" {
   location            = azurerm_resource_group.ml.location
   resource_group_name = azurerm_resource_group.ml.name
   application_type    = "web"
-  tags = local.tags
+  tags                = local.tags
 }
 
 resource "azurerm_key_vault" "ml" {
@@ -27,7 +27,7 @@ resource "azurerm_key_vault" "ml" {
   resource_group_name = azurerm_resource_group.ml.name
   tenant_id           = data.azurerm_client_config.current.tenant_id
   sku_name            = "standard"
-  tags = local.tags
+  tags                = local.tags
 }
 
 resource "azurerm_storage_account" "ml" {
