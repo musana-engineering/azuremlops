@@ -14,7 +14,7 @@ module "network" {
   tags                = local.tags
   location            = local.location
   firewall_whitelist  = local.firewall_whitelist
-  resource_group_name = "rg-aiops"
+  resource_group_name = "rg-network"
 
   private_dns_zones = [
     "privatelink.blob.core.windows.net",
