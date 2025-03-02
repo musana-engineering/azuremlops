@@ -25,18 +25,9 @@ module "network" {
   virtual_networks = {
 
     "core" = {
-      name          = "vnet-aiops"
+      name          = "vnet-core"
       address_space = ["10.141.0.0/16"]
       dns_servers   = ["168.63.129.16"]
-    }
-  }
-
-  nat_gateways = {
-
-    "core" = {
-      name              = "ngw-aiops"
-      allocation_method = "Static"
-      sku_name          = "Standard"
     }
   }
 
@@ -44,15 +35,15 @@ module "network" {
 
     "aks" = {
       name                                          = "snet-core"
-      virtual_network_name                          = "vnet-aiops"
+      virtual_network_name                          = "vnet-core"
       address_prefixes                              = ["10.141.0.0/17"]
       private_endpoint_network_policies_enabled     = true
       private_link_service_network_policies_enabled = true
     }
 
     "controlplane" = {
-      name                                          = "snet-aks-cplane"
-      virtual_network_name                          = "vnet-aiops"
+      name                                          = "snet-aks"
+      virtual_network_name                          = "vnet-core"
       address_prefixes                              = ["10.141.129.0/28"]
       private_endpoint_network_policies_enabled     = true
       private_link_service_network_policies_enabled = true

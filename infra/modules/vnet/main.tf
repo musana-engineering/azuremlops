@@ -77,7 +77,7 @@ resource "azurerm_private_dns_zone" "core" {
 }
 
 data "azurerm_virtual_network" "vnet" {
-  name                = "vnet-aiops"
+  name                = "vnet-core"
   resource_group_name = var.resource_group_name
 
   depends_on = [azurerm_virtual_network.vnet]
@@ -85,14 +85,14 @@ data "azurerm_virtual_network" "vnet" {
 
 data "azurerm_subnet" "aks" {
   name                 = "snet-core"
-  virtual_network_name = "vnet-aiops"
+  virtual_network_name = "vnet-core"
   resource_group_name  = var.resource_group_name
   depends_on           = [azurerm_subnet.subnet, azurerm_virtual_network.vnet]
 }
 
 resource "azurerm_private_dns_zone_virtual_network_link" "core" {
   for_each              = toset(var.private_dns_zones)
-  name                  = "vnet-aiops"
+  name                  = "vnet-core"
   resource_group_name   = azurerm_resource_group.core.name
   private_dns_zone_name = each.value
   virtual_network_id    = data.azurerm_virtual_network.vnet.id
@@ -103,8 +103,8 @@ resource "azurerm_private_dns_zone_virtual_network_link" "core" {
 
 // Nat Gateway
 resource "azurerm_public_ip" "nat" {
-  for_each            = var.nat_gateways
-  name                = each.value.name
+  count               = var.nat_gateway_enabled ? 1 : 0
+  name                = "ngw-core"
   location            = azurerm_resource_group.core.location
   resource_group_name = azurerm_resource_group.core.name
   allocation_method   = "Static"
@@ -115,36 +115,22 @@ resource "azurerm_public_ip" "nat" {
 }
 
 resource "azurerm_nat_gateway" "nat" {
-  for_each            = var.nat_gateways
-  name                = each.value.name
+  count               = var.nat_gateway_enabled ? 1 : 0
+  name                = "ngw-core"
   location            = azurerm_resource_group.core.location
   resource_group_name = azurerm_resource_group.core.name
-  sku_name            = each.value.sku_name
+  sku_name            = "Standard"
 
   depends_on = [azurerm_virtual_network.vnet,
   azurerm_subnet.subnet]
 }
 
 resource "azurerm_nat_gateway_public_ip_association" "nat" {
-  for_each             = var.nat_gateways
-  nat_gateway_id       = azurerm_nat_gateway.nat[each.key].id
-  public_ip_address_id = azurerm_public_ip.nat[each.key].id
+  count                = var.nat_gateway_enabled ? 1 : 0
+  nat_gateway_id       = azurerm_nat_gateway.nat[count.index].id
+  public_ip_address_id = azurerm_public_ip.nat[count.index].id
 
   depends_on = [azurerm_virtual_network.vnet,
   azurerm_subnet.subnet]
 }
 
-resource "azurerm_subnet_nat_gateway_association" "nat" {
-  for_each       = var.subnets
-  subnet_id      = azurerm_subnet.subnet[each.key].id
-  nat_gateway_id = data.azurerm_nat_gateway.nat.id
-
-  depends_on = [azurerm_virtual_network.vnet,
-  azurerm_subnet.subnet]
-}
-
-data "azurerm_nat_gateway" "nat" {
-  name                = "ngw-aiops"
-  resource_group_name = var.resource_group_name
-  depends_on          = [azurerm_nat_gateway.nat]
-}

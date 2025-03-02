@@ -2,7 +2,10 @@ variable "location" {}
 variable "firewall_whitelist" {}
 variable "resource_group_name" {}
 variable "private_dns_zones" { type = list(string) }
-
+variable "nat_gateway_enabled" {
+  type    = bool
+  default = false
+}
 variable "container_service_features" {
   default = [
     "EnableAPIServerVnetIntegrationPreview",
@@ -35,10 +38,3 @@ variable "virtual_networks" {
   }))
 }
 
-variable "nat_gateways" {
-  type = map(object({
-    name              = string
-    allocation_method = string
-    sku_name          = string
-  }))
-}
