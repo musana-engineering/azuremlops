@@ -1,2 +1,2 @@
 # Automated Machine Learning Operations on AzureML and Kubernetes
-![ml_page_cover](https://github.com/user-attachments/assets/f584496e-1782-49dc-a5eb-18cf34861f68)
+![MLOPS](https://github.com/user-attachments/assets/de0b67c7-08f0-48ae-9566-d25cb6921547)
