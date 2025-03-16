@@ -1,2 +1,2 @@
 # Automated Machine Learning Operations on AzureML and Kubernetes
-![mlops-pipeline](https://github.com/user-attachments/assets/f7280302-901b-47b0-b216-323c95430475)
+![MLOPS](https://github.com/user-attachments/assets/e77a3c48-4198-402b-974a-f135df66a89c)
